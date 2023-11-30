@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react"
-// import { ArweaveWebWallet, type State, type AppInfo } from 'arweave-wallet-connector'
 import { createContract } from "arweavekit/contract"
-
-// const state: State = { url: 'arweave.app', showIframe: false, usePopup: false, requirePopup: false, keepPopup: false, connected: false }
-// const appInfo: AppInfo = {
-//     name: "AR Contractor",
-//     logo: 'https://jfbeats.github.io/ArweaveWalletConnector/placeholder.svg'
-// }
-
-// const wallet = new ArweaveWebWallet(appInfo, { state })
 
 export default function DeployPage() {
     const [src, setSrc] = useState<string>("")
@@ -20,11 +11,7 @@ export default function DeployPage() {
     const [walletUploaded, setWalletUploaded] = useState(false)
     const [walletJWK, setWalletJWK] = useState<string>()
     const [useWallet, setUseWallet] = useState(false)
-    // const [connected, setConnected] = useState(false)
     const [error, setError] = useState("")
-    // const urlSearchParams = new URLSearchParams(window.location.search)
-    // const src = urlSearchParams.get("src")
-    // const state = urlSearchParams.get("state")
 
     useEffect(() => {
         const contracts = localStorage.getItem("contracts")
@@ -47,16 +34,6 @@ export default function DeployPage() {
         setSrc(src)
         setState(state)
     }, [contractTarget])
-
-    // if (!src || !state) return <div>please provide src and state</div>
-
-    // wallet.on("connect", () => {
-    //     setConnected(true)
-    // })
-
-    // wallet.on("disconnect", () => {
-    //     setConnected(false)
-    // })
 
     async function deploy() {
         if (!walletUploaded && !useWallet) return alert("please upload a wallet")
@@ -117,10 +94,10 @@ export default function DeployPage() {
                 <option value="mainnet">Mainnet</option>
             </select>}
         {deployTarget && <>
-            <label htmlFor="wallet" className="p-2 cursor-pointer bg-green-500/10 text-center">{!walletUploaded ? "Import a wallet.json file" : `Imported: ${fileName}`}</label>
+            <label htmlFor="wallet" className="p-2 cursor-pointer bg-green-500/10 text-center">{!walletUploaded ? "Import a wallet.json file" : `Imported: ${fileName} ✅`}</label>
             <input type="file" accept="application/JSON" id="wallet" className="hidden" onChange={(e) => fileUploaded(e.target.files!)} />
             or
-            <button className="p-2 bg-green-500/10" onClick={() => { setUseWallet(true); setWalletUploaded(false) }}>Use Wallet Connector</button>
+            <button className="p-2 bg-green-500/10" onClick={() => { setUseWallet(true); setWalletUploaded(false) }}>Use ArConnect {useWallet && "✅"}</button>
         </>}
         {(walletUploaded || useWallet) && <div><button className="p-2 bg-green-500/10" onClick={deploy}>Deploy</button></div>}
         {error && <div className="text-red-500/80 bg-black/40 p-2 text-lg">{error}</div>}
