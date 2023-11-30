@@ -132,7 +132,7 @@ function App() {
   function renderSwitch(param: tabs) {
     switch (param) {
       case "deploy":
-        return <DeployTab src={activeContract ? contracts[activeContract]["contract.js"] : ""} state={activeContract ? contracts[activeContract]["state.json"] : ""} />
+        return <DeployTab />
       case "contract":
         return <CodeArea value={contracts[activeContract]["contract.js"]} setValue={setCode} language="javascript" />
       case "state":

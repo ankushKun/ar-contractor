@@ -12,6 +12,8 @@ export default function DeployPage() {
     const [walletJWK, setWalletJWK] = useState<string>()
     const [useWallet, setUseWallet] = useState(false)
     const [error, setError] = useState("")
+    const [deploySuccess, setDeploySuccess] = useState(false)
+    const [contractTxID, setContractTxID] = useState("")
 
     useEffect(() => {
         const contracts = localStorage.getItem("contracts")
@@ -50,6 +52,11 @@ export default function DeployPage() {
                     strategy: "both",
                 })
                 console.log(contract)
+                if (contract.result.status == 200) {
+                    setDeploySuccess(true)
+                    setError("")
+                    setContractTxID(contract.contractTxId)
+                }
             }
             catch (e) {
                 console.log(e)
@@ -63,20 +70,16 @@ export default function DeployPage() {
     }
 
     function fileUploaded(e: FileList) {
-        const file = e[0]
-        console.log(file)
-        if (!file) return
-        setFileName(file.name)
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            const text = e.target?.result
-            if (!text) return
-            const walletStr = JSON.parse(text.toString())
-            setWalletUploaded(true)
-            setWalletJWK(walletStr.toString())
-            setUseWallet(false)
-        }
-        reader.readAsText(file)
+        const file = e[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            const text = reader.result as string;
+            setWalletUploaded(true);
+            setWalletJWK(JSON.parse(text));
+            setUseWallet(false);
+            setFileName(file.name);
+        };
+        reader.readAsText(file);
     }
 
     return <div className="w-full h-full p-1 flex flex-col gap-2 text-white/80">
@@ -101,5 +104,10 @@ export default function DeployPage() {
         </>}
         {(walletUploaded || useWallet) && <div><button className="p-2 bg-green-500/10" onClick={deploy}>Deploy</button></div>}
         {error && <div className="text-red-500/80 bg-black/40 p-2 text-lg">{error}</div>}
+        {deploySuccess && <div className="text-green-500/80 bg-black/40 p-2 text-lg">
+            <div>Contract deployed successfully!</div>
+            <div>Contract TX ID: <span className="text-green-200">{contractTxID}</span></div>
+            {deployTarget != "local" && <a href={`https://viewblock.io/arweave/tx/${contractTxID}`} target="_blank" rel="noreferrer" className="block text-green-200 underline">View on ViewBlock</a>}
+        </div>}
     </div>
 }
