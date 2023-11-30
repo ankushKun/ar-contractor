@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react"
 import { createContract } from "arweavekit/contract"
 
+const derivations = [
+    "not allowed",
+    "Allowed-With-Credit",
+    "Allowed-With-Indication",
+    "Allowed-With-License-Passthrough",
+    "Allowed-With-RevenueShare"
+]
+
+const commercialUses = [
+    "not allowed",
+    "Allowed",
+    "Allowed-With-Credit"
+]
+
 export default function DeployPage() {
     const [src, setSrc] = useState<string>("")
     const [state, setState] = useState<string>("")
     const [availableContracts, setAvailableContracts] = useState<string[]>([])
     const [contractTarget, setContractTarget] = useState<string>("")
     const [deployTarget, setDeployTarget] = useState("")
+    const [derivation, setDerivation] = useState<string>("")
+    const [commercialUse, setCommercialUse] = useState<string>("")
     const [fileName, setFileName] = useState("")
     const [walletUploaded, setWalletUploaded] = useState(false)
     const [walletJWK, setWalletJWK] = useState<string>()
@@ -50,6 +66,12 @@ export default function DeployPage() {
                     initialState: state!,
                     environment: "local",
                     strategy: "both",
+                    tags: [
+                        { name: "App-Name", value: "AR-Contractor" },
+                        { name: "App-Version", value: "0.1.0" },
+                        { name: "License", value: "yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8" },
+
+                    ]
                 })
                 console.log(contract)
                 if (contract.result.status == 200) {
@@ -83,26 +105,56 @@ export default function DeployPage() {
     }
 
     return <div className="w-full h-full p-1 flex flex-col gap-2 text-white/80">
-        <div className="text-2xl border-b pb-2 border-white/20">Deploy Contracts</div>
-        <select className="bg-transparent" defaultValue="" onChange={(e) => setContractTarget(e.target.value)}>
+        <div className="text-2xl border-b pb-2 border-white/20 text-center">Deploy Contracts</div>
+        <label htmlFor="contractSelector" className="">Select a contract to deploy</label>
+        <select className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setContractTarget(e.target.value)}>
             <option value="" disabled>select contract to deploy</option>
             {availableContracts.map((contract, _) => {
                 return <option key={_} value={contract}>{contract}</option>
             })}
         </select>
         {contractTarget &&
-            <select className="bg-transparent" defaultValue="" onChange={(e) => setDeployTarget(e.target.value)}>
-                <option value="" disabled>select deployment target</option>
-                <option value="local">Localhost (npx arlocal)</option>
-                <option value="mainnet">Mainnet</option>
-            </select>}
+            <>
+                <label htmlFor="environmentSelector" className="">Select an environment to deploy</label>
+                <select className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setDeployTarget(e.target.value)}>
+                    <option value="" disabled>select deployment target</option>
+                    <option value="local">Localhost (npx arlocal)</option>
+                    <option value="mainnet">Mainnet</option>
+                </select>
+            </>}
         {deployTarget && <>
             <label htmlFor="wallet" className="p-2 cursor-pointer bg-green-500/10 text-center">{!walletUploaded ? "Import a wallet.json file" : `Imported: ${fileName} ✅`}</label>
             <input type="file" accept="application/JSON" id="wallet" className="hidden" onChange={(e) => fileUploaded(e.target.files!)} />
-            or
+            <div className="text-center">or</div>
             <button className="p-2 bg-green-500/10" onClick={() => { setUseWallet(true); setWalletUploaded(false) }}>Use ArConnect {useWallet && "✅"}</button>
         </>}
-        {(walletUploaded || useWallet) && <div><button className="p-2 bg-green-500/10" onClick={deploy}>Deploy</button></div>}
+        {(walletUploaded || useWallet) && <div>
+            <div className="text-center text-xl">Universal Data Licensing v1.0
+                {" "}<a className="underline text-green-100/80 text-sm" target="_blank" href="https://arweave.net/yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8">read more</a>
+            </div>
+            <div className="flex gap-2 justify-evenly">
+                <div className="flex flex-col gap-1 p-1">
+                    <label htmlFor="derivation" className="">Derivation Permission</label>
+                    <select id="derivation" className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setDerivation(e.target.value)}>
+                        <option value="" disabled>select derivation permission</option>
+                        {derivations.map((derivation, _) => {
+                            return <option key={_} value={derivation}>{derivation}</option>
+                        })}
+                    </select>
+                    {(derivation == "Allowed-With-RevenueShare") && <input type="number" className="bg-transparent border-b border-white/20" disabled={derivation != "Allowed-With-RevenueShare"} placeholder="revenue share" />}
+                </div>
+                <div className="flex flex-col gap-1 p-1">
+                    <label htmlFor="commercialUse">Commercial Use Permission</label>
+                    <select className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setCommercialUse(e.target.value)}>
+                        <option value="" disabled>select commercial use permission</option>
+                        {commercialUses.map((commercialUse, _) => {
+                            return <option key={_} value={commercialUse}>{commercialUse}</option>
+                        })}
+                    </select>
+                </div>
+            </div>
+        </div>}
+        {(derivation && commercialUse) && <div className="w-full my-5"><button className="p-2 bg-green-500/10 mx-auto block" onClick={deploy}>Deploy 🚀</button></div>}
         {error && <div className="text-red-500/80 bg-black/40 p-2 text-lg">{error}</div>}
         {deploySuccess && <div className="text-green-500/80 bg-black/40 p-2 text-lg">
             <div>Contract deployed successfully!</div>

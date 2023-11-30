@@ -5,8 +5,10 @@ import { defaultContract, defaultState } from "./default/name"
 import { editor } from "monaco-editor"
 import DeployTab from "./components/deployTab"
 import CodeArea from "./components/codeArea"
+import TestTab from "./components/testTab"
+import Cloud from "./components/cloudStorage"
 
-type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset"
+type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset" | "test" | "cloud"
 
 type files = {
   [key: string]: {
@@ -133,6 +135,10 @@ function App() {
     switch (param) {
       case "deploy":
         return <DeployTab />
+      case "test":
+        return <TestTab />
+      case "cloud":
+        return <Cloud />
       case "contract":
         return <CodeArea value={contracts[activeContract]["contract.js"]} setValue={setCode} language="javascript" />
       case "state":
@@ -155,6 +161,8 @@ function App() {
         <div className="flex h-full justify-evenly w-full">
           <div className="flex flex-col border-r border-white/10">
             <LeftTabButton text="🚀" id="deploy" />
+            <LeftTabButton text="🧪" id="test" />
+            <LeftTabButton text="☁️" id="cloud" />
             <div className="grow"></div>
             <LeftTabButton text="⚙️" id="settings" />
           </div>
