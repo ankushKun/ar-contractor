@@ -108,7 +108,7 @@ export default function DeployPage() {
         <div className="text-2xl border-b pb-2 border-white/20 text-center">Deploy Contracts</div>
         <label htmlFor="contractSelector" className="">Select a contract to deploy</label>
         <select className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setContractTarget(e.target.value)}>
-            <option value="" disabled>select contract to deploy</option>
+            <option value="" disabled>...</option>
             {availableContracts.map((contract, _) => {
                 return <option key={_} value={contract}>{contract}</option>
             })}
@@ -117,7 +117,7 @@ export default function DeployPage() {
             <>
                 <label htmlFor="environmentSelector" className="">Select an environment to deploy</label>
                 <select className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setDeployTarget(e.target.value)}>
-                    <option value="" disabled>select deployment target</option>
+                    <option value="" disabled>...</option>
                     <option value="local">Localhost (npx arlocal)</option>
                     <option value="mainnet">Mainnet</option>
                 </select>
@@ -126,17 +126,17 @@ export default function DeployPage() {
             <label htmlFor="wallet" className="p-2 cursor-pointer bg-green-500/10 text-center">{!walletUploaded ? "Import a wallet.json file" : `Imported: ${fileName} ✅`}</label>
             <input type="file" accept="application/JSON" id="wallet" className="hidden" onChange={(e) => fileUploaded(e.target.files!)} />
             <div className="text-center">or</div>
-            <button className="p-2 bg-green-500/10" onClick={() => { setUseWallet(true); setWalletUploaded(false) }}>Use ArConnect {useWallet && "✅"}</button>
+            <button className="p-2 bg-green-500/10" onClick={() => { setUseWallet(true); setWalletUploaded(false) }}>Use ArConnect (wip) {useWallet && "✅"}</button>
         </>}
         {(walletUploaded || useWallet) && <div>
             <div className="text-center text-xl">Universal Data Licensing v1.0
                 {" "}<a className="underline text-green-100/80 text-sm" target="_blank" href="https://arweave.net/yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8">read more</a>
             </div>
-            <div className="flex gap-2 justify-evenly">
+            <div className="flex gap-2 flex-col md:flex-row justify-evenly">
                 <div className="flex flex-col gap-1 p-1">
                     <label htmlFor="derivation" className="">Derivation Permission</label>
                     <select id="derivation" className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setDerivation(e.target.value)}>
-                        <option value="" disabled>select derivation permission</option>
+                        <option value="" disabled>...</option>
                         {derivations.map((derivation, _) => {
                             return <option key={_} value={derivation}>{derivation}</option>
                         })}
@@ -146,7 +146,7 @@ export default function DeployPage() {
                 <div className="flex flex-col gap-1 p-1">
                     <label htmlFor="commercialUse">Commercial Use Permission</label>
                     <select className="bg-transparent border p-0.5 px-1 border-white/40 " defaultValue="" onChange={(e) => setCommercialUse(e.target.value)}>
-                        <option value="" disabled>select commercial use permission</option>
+                        <option value="" disabled>...</option>
                         {commercialUses.map((commercialUse, _) => {
                             return <option key={_} value={commercialUse}>{commercialUse}</option>
                         })}

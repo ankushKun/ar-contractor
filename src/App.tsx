@@ -7,8 +7,9 @@ import DeployTab from "./components/deployTab"
 import CodeArea from "./components/codeArea"
 import TestTab from "./components/testTab"
 import Cloud from "./components/cloudStorage"
+import Showcase from "./components/showcaseTab"
 
-type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset" | "test" | "cloud"
+type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset" | "test" | "cloud" | "showcase"
 
 type files = {
   [key: string]: {
@@ -139,6 +140,8 @@ function App() {
         return <TestTab />
       case "cloud":
         return <Cloud />
+      case "showcase":
+        return <Showcase />
       case "contract":
         return <CodeArea value={contracts[activeContract]["contract.js"]} setValue={setCode} language="javascript" />
       case "state":
@@ -163,6 +166,7 @@ function App() {
             <LeftTabButton text="🚀" id="deploy" />
             <LeftTabButton text="🧪" id="test" />
             <LeftTabButton text="☁️" id="cloud" />
+            <LeftTabButton text="🌐" id="showcase" />
             <div className="grow"></div>
             <LeftTabButton text="⚙️" id="settings" />
           </div>
