@@ -150,15 +150,15 @@ function App() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#282c34] text-white/80">
-      <div className="flex flex-col">
-        <div className="flex h-full  justify-evenly">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#282c34] text-white/80">
+      <div className="flex flex-row md:flex-col">
+        <div className="flex h-full justify-evenly w-full">
           <div className="flex flex-col border-r border-white/10">
             <LeftTabButton text="🚀" id="deploy" />
             <div className="grow"></div>
             <LeftTabButton text="⚙️" id="settings" />
           </div>
-          <div className="w-[200px]">
+          <div className="w-full md:w-[200px]">
             <div className="bg-black/10 p-0.5 px-5 break-keep">Contracts</div>
             <div className="">
               {Object.keys(contracts).map((file: string) => {
@@ -174,7 +174,7 @@ function App() {
         </div>
       </div>
       <div className="grow bg-slate-500/20">
-        <div className="flex h-[5vh] items-center bg-[#282c34]">
+        <div className="flex h-[5vh] items-center bg-[#282c34] overflow-clip">
           {activeContract && <>
             <FileTab id="contract" text="contract.js" />
             <FileTab id="state" text="state.json" />
