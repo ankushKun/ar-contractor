@@ -86,8 +86,8 @@ export default function DeployPage() {
         <div className="text-2xl border-b pb-2 border-white/20">Deploy Contracts</div>
         <select className="bg-transparent" defaultValue="" onChange={(e) => setContractTarget(e.target.value)}>
             <option value="" disabled>select contract to deploy</option>
-            {availableContracts.map((contract) => {
-                return <option value={contract}>{contract}</option>
+            {availableContracts.map((contract, _) => {
+                return <option key={_} value={contract}>{contract}</option>
             })}
         </select>
         {contractTarget &&
