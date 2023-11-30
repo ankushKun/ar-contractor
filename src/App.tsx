@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { useMonaco } from "@monaco-editor/react"
 import theme from "monaco-themes/themes/Nord.json"
 import { defaultContract, defaultState } from "./default/name"
-import CodeArea from "./components/codeArea"
 import { editor } from "monaco-editor"
+import DeployTab from "./components/deployTab"
+import CodeArea from "./components/codeArea"
 
 type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset"
 
@@ -15,12 +16,12 @@ type files = {
 }
 
 function App() {
-  const monaco = useMonaco()
-  monaco?.editor.defineTheme("nord", theme as editor.IStandaloneThemeData)
-
   const [activeTab, setActiveTab] = useState<tabs>("")
   const [contracts, setContracts] = useState<files>({})
   const [activeContract, setActiveContract] = useState<string>("")
+  const monaco = useMonaco()
+  monaco?.editor.defineTheme("nord", theme as editor.IStandaloneThemeData)
+
 
   useEffect(() => {
     const c = localStorage.getItem("contracts")
@@ -41,6 +42,8 @@ function App() {
       setContracts(c)
     }
   }, [])
+
+
 
 
   const LeftTabButton = ({ text, id }: { text: string, id: tabs }) => {
@@ -128,14 +131,12 @@ function App() {
 
   function renderSwitch(param: tabs) {
     switch (param) {
+      case "deploy":
+        return <DeployTab src={activeContract ? contracts[activeContract]["contract.js"] : ""} state={activeContract ? contracts[activeContract]["state.json"] : ""} />
       case "contract":
         return <CodeArea value={contracts[activeContract]["contract.js"]} setValue={setCode} language="javascript" />
       case "state":
         return <CodeArea value={contracts[activeContract]["state.json"]} setValue={setState} language="json" />
-      case "deploy":
-        return <>
-          Deploy Tab
-        </>
       case "settings":
         return <>
           Settings Tab
@@ -179,7 +180,7 @@ function App() {
             <FileTab id="state" text="state.json" />
           </>}
         </div>
-        <div className="h-[95vh] w-full bg-blue-300/5  text-center flex flex-col items-center justify-center  text-2xl">
+        <div className="h-[95vh] w-full bg-blue-300/5  text-center flex flex-col items-center justify-center">
           {renderSwitch(activeTab)}
         </div>
       </div>
