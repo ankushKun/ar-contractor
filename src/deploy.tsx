@@ -15,7 +15,7 @@ const commercialUses = [
     "Allowed-With-Credit"
 ]
 
-export default function DeployPage() {
+export default function Deploy() {
     const [src, setSrc] = useState<string>("")
     const [state, setState] = useState<string>("")
     const [availableContracts, setAvailableContracts] = useState<string[]>([])
@@ -78,6 +78,15 @@ export default function DeployPage() {
                     setDeploySuccess(true)
                     setError("")
                     setContractTxID(contract.contractTxId)
+                    const deployments = sessionStorage.getItem("deployments")
+                    if (!deployments) {
+                        sessionStorage.setItem("deployments", JSON.stringify({ [contractTarget]: { id: contract.contractTxId, env: deployTarget } }))
+                    }
+                    else {
+                        const parsed = JSON.parse(deployments)
+                        parsed[contractTarget] = { id: contract.contractTxId, env: deployTarget }
+                        sessionStorage.setItem("deployments", JSON.stringify(parsed))
+                    }
                 }
             }
             catch (e) {

@@ -6,6 +6,7 @@
     margin: 0;
     padding: 0;
     scroll-behavior: smooth !important;
+    color: rgb(255 255 255 / 0.8);
 }
 
 * {
@@ -15,4 +16,16 @@
 
 *::-webkit-scrollbar {
     display: none;
+}
+
+select:focus {
+    outline: none;
+}
+
+input:focus {
+    outline: none;
+}
+
+textarea:focus {
+    outline: none;
 }

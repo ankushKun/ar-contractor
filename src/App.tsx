@@ -3,11 +3,8 @@ import { useMonaco } from "@monaco-editor/react"
 import theme from "monaco-themes/themes/Nord.json"
 import { defaultContract, defaultState } from "./default/name"
 import { editor } from "monaco-editor"
-import DeployTab from "./components/deployTab"
 import CodeArea from "./components/codeArea"
-import TestTab from "./components/testTab"
-import Cloud from "./components/cloudStorage"
-import Showcase from "./components/showcaseTab"
+import Tab from "./components/tab"
 
 type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset" | "test" | "cloud" | "showcase"
 
@@ -135,13 +132,13 @@ function App() {
   function renderSwitch(param: tabs) {
     switch (param) {
       case "deploy":
-        return <DeployTab />
+        return <Tab tab="deploy" />
       case "test":
-        return <TestTab />
+        return <Tab tab="test" />
       case "cloud":
-        return <Cloud />
+        return <Tab tab="cloud" />
       case "showcase":
-        return <Showcase />
+        return <Tab tab="showcase" />
       case "contract":
         return <CodeArea value={contracts[activeContract]["contract.js"]} setValue={setCode} language="javascript" />
       case "state":
@@ -191,7 +188,7 @@ function App() {
             <FileTab id="state" text="state.json" />
           </>}
         </div>
-        <div className="h-[95vh] w-full bg-blue-300/5  text-center flex flex-col items-center justify-center">
+        <div className="h-[95vh] w-full bg-blue-300/5  flex flex-col items-center justify-center">
           {renderSwitch(activeTab)}
         </div>
       </div>
