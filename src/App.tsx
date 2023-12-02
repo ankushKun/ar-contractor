@@ -157,7 +157,7 @@ function App() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#282c34] text-white/80">
-      <div className="flex max-w-[100vw] max-sm:max-h-[35vh] md:h-[100vh] justify-start bg-black/10">
+      <div className="flex max-sm:w-full max-w-[100vw] max-sm:max-h-[35vh] md:h-[100vh] justify-start bg-black/10">
         <div className="flex flex-col border-r border-white/10">
           <LeftTabButton text="🚀" id="deploy" />
           <LeftTabButton text="🧪" id="test" />
@@ -166,7 +166,7 @@ function App() {
           <div className="grow"></div>
           <LeftTabButton text="⚙️" id="settings" />
         </div>
-        <div className="overflow-scroll md:w-[200px] relative">
+        <div className="overflow-scroll w-full md:w-[200px] relative">
           <div className="bg-black/10 p-0.5 px-5 break-keep text-center">Contracts</div>
           <div className="">
             {Object.keys(contracts).map((file: string) => {

@@ -15,6 +15,19 @@ const commercialUses = [
     "Allowed-With-Credit"
 ]
 
+function extractFunctions(src: string) {
+    const functionRegex = /function\s+([^\s(]+)\s*\(([^)]*)\)\s*{([^}]*)}/g;
+    const matches = src.matchAll(functionRegex);
+    const functions = [];
+
+    for (const match of matches) {
+        if (match[1] == "handle") continue
+        functions.push(match[1])
+    }
+
+    return functions
+}
+
 export default function Deploy() {
     const [src, setSrc] = useState<string>("")
     const [state, setState] = useState<string>("")
@@ -69,8 +82,6 @@ export default function Deploy() {
                     tags: [
                         { name: "App-Name", value: "AR-Contractor" },
                         { name: "App-Version", value: "0.1.0" },
-                        { name: "License", value: "yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8" },
-
                     ]
                 })
                 console.log(contract)
@@ -80,11 +91,11 @@ export default function Deploy() {
                     setContractTxID(contract.contractTxId)
                     const deployments = sessionStorage.getItem("deployments")
                     if (!deployments) {
-                        sessionStorage.setItem("deployments", JSON.stringify({ [contractTarget]: { id: contract.contractTxId, env: deployTarget } }))
+                        sessionStorage.setItem("deployments", JSON.stringify({ [contractTarget]: { id: contract.contractTxId, env: deployTarget, functions: extractFunctions(src) } }))
                     }
                     else {
                         const parsed = JSON.parse(deployments)
-                        parsed[contractTarget] = { id: contract.contractTxId, env: deployTarget }
+                        parsed[contractTarget] = { id: contract.contractTxId, env: deployTarget, functions: extractFunctions(src) }
                         sessionStorage.setItem("deployments", JSON.stringify(parsed))
                     }
                 }
