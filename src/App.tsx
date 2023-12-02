@@ -160,28 +160,27 @@ function App() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#282c34] text-white/80">
-      <div className="flex flex-row md:flex-col">
-        <div className="flex h-full justify-evenly w-full">
-          <div className="flex flex-col border-r border-white/10">
-            <LeftTabButton text="🚀" id="deploy" />
-            <LeftTabButton text="🧪" id="test" />
-            <LeftTabButton text="☁️" id="cloud" />
-            <LeftTabButton text="🌐" id="showcase" />
-            <div className="grow"></div>
-            <LeftTabButton text="⚙️" id="settings" />
-          </div>
-          <div className="w-full md:w-[200px]">
-            <div className="bg-black/10 p-0.5 px-5 break-keep">Contracts</div>
-            <div className="">
-              {Object.keys(contracts).map((file: string) => {
-                return <button className={`flex gap-1 w-full text-left border-b border-white/10 ${activeContract == file && "bg-white/10 "}`}
-                  onClick={() => { setActiveContract(file); setActiveTab("contract") }}
-                ><div className="overflow-x-scroll grow p-1">{file}</div>
-                  <button className=" p-1 bg-red-500/10" onClick={(e) => delContract(e, file)}>x</button>
-                </button>
-              })}
-              <button className="p-1 w-full border-b border-white/10 px-2" onClick={newContract}>+</button>
-            </div>
+      <div className="flex max-w-[100vw] max-sm:max-h-[35vh] md:h-[100vh] justify-start bg-black/10">
+        <div className="flex flex-col border-r border-white/10">
+          <LeftTabButton text="🚀" id="deploy" />
+          <LeftTabButton text="🧪" id="test" />
+          <LeftTabButton text="☁️" id="cloud" />
+          <LeftTabButton text="🌐" id="showcase" />
+          <div className="grow"></div>
+          <LeftTabButton text="⚙️" id="settings" />
+        </div>
+        <div className="overflow-scroll md:w-[200px] relative">
+          <div className="bg-black/10 p-0.5 px-5 break-keep text-center">Contracts</div>
+          <div className="">
+            {Object.keys(contracts).map((file: string) => {
+              return <button className={`flex gap-1 w-full text-left border-b border-white/10 ${activeContract == file && "bg-white/10 "}`}
+                onClick={() => { setActiveContract(file); setActiveTab("contract") }}
+              ><div className="overflow-x-scroll grow p-1">{file}</div>
+                {/* <button className=" p-1 bg-red-500/10" onClick={(e) => delContract(e, file)}>download</button> */}
+                <button className=" p-1 bg-red-500/10" onClick={(e) => delContract(e, file)}>x</button>
+              </button>
+            })}
+            <button className="p-1 w-full border-b border-white/10 px-2" onClick={newContract}>+</button>
           </div>
         </div>
       </div>
