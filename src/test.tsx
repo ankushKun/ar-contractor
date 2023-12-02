@@ -37,7 +37,8 @@ export default function Test() {
                 contractTxId: deployments[selectedContract].id,
                 options: {
                     function: functionName
-                }
+                },
+                strategy: "arweave"
             })
             console.log(res)
             if (res.result.status == 200) {
@@ -54,17 +55,19 @@ export default function Test() {
         }
         else if (functionType == "write") {
             const res = await writeContract({
+                wallet: "use_wallet",
                 environment: deployments[selectedContract].env,
                 contractTxId: deployments[selectedContract].id,
                 options: {
                     function: functionName,
-                    args: functionArgs ? JSON.parse(functionArgs) : []
-                }
+                    ...JSON.parse(functionArgs)
+                },
+                strategy: "arweave"
             })
             console.log(res)
             if (res.result.status == 200) {
                 setSuccess(true)
-                setResult(JSON.stringify({ result: res.writeContract.result }, null, 2))
+                setResult("TXN ID: " + res.writeContract.originalTxId)
             } else {
                 setSuccess(false)
                 setResult(`error: ${res.result.status}
@@ -73,7 +76,7 @@ ${res.result.statusText}
 ${res.writeContract.errorMessage}`)
 
             }
-            setState(JSON.stringify({ state: res.writeContract.state }, null, 2))
+            setState(JSON.stringify(res.state, null, 2))
         }
     }
 
@@ -99,11 +102,11 @@ ${res.writeContract.errorMessage}`)
                                 <option value="write">write state</option>
                             </select>
                             <input className="w-full bg-transparent p-0.5 px-1 border border-white/40" placeholder="function name" onChange={(e) => setFunctionName(e.target.value)} />
-                            <textarea className="w-full bg-transparent p-0.5 px-1 border border-white/40" placeholder="input json (optional)" defaultValue={JSON.stringify("{}", undefined, 2).replace(/"/g, "")} onChange={(e) => setFunctionArgs(e.target.value)} />
+                            <textarea className="w-full bg-transparent p-0.5 px-1 border border-white/40" rows={10} placeholder="input json (optional)" defaultValue={JSON.stringify({ name: "ankushKun" }, undefined, 2)} onChange={(e) => setFunctionArgs(e.target.value)} />
                             <button className="bg-transparent p-0.5 px-1 border border-white/50" onClick={() => interact()}>call</button>
                         </div>
                     </div>
-                    <pre className={`mt-9 bg-black/40 p-1 px-2 ${success ? "text-green-200" : "text-red-200"}`}>
+                    <pre className={`mt-9 bg-black/40 p-1 px-2 overflow-scroll ${success ? "text-green-200" : "text-red-200"}`}>
                         RESULT<br />
                         {result || "..."}
                         <br /><br />
