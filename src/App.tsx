@@ -20,7 +20,11 @@ function App() {
   const [contracts, setContracts] = useState<files>({})
   const [activeContract, setActiveContract] = useState<string>("")
   const monaco = useMonaco()
-  monaco?.editor.defineTheme("nord", theme as editor.IStandaloneThemeData)
+
+  useEffect(() => {
+    if (monaco)
+      monaco?.editor.defineTheme("nord", theme as editor.IStandaloneThemeData)
+  }, [monaco])
 
 
   useEffect(() => {
