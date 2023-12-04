@@ -6,6 +6,9 @@ import './index.css'
 import { ArweaveWalletKit } from 'arweave-wallet-kit'
 // import DeployPage from './deploy.tsx'
 import Router from './router'
+// import { Buffer } from 'buffer';
+
+// window.Buffer = Buffer
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

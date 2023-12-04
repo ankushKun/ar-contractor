@@ -4,6 +4,7 @@ import JSZip from "jszip"
 import { useEffect, useState } from "react"
 import { v4 } from "uuid"
 import { useConnection, useActiveAddress } from "arweave-wallet-kit"
+import axios from "axios"
 
 type cdata = {
     [key: string]: {
@@ -99,33 +100,48 @@ export default function Cloud() {
         if (!(id in repositories)) return alert("repo not found")
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const repo = repositories.find((repo: object) => repo.id == id)
+        const repo: any = repositories.find((repo: any) => repo.id == id)
         console.log(repo)
         if (!repo) return alert("repo not found")
 
         const dataTxId = repo.dataTxId
-        fetch(`http://localhost:1984/tx/${dataTxId}`).then(async (res) => {
-            const data = await res.json()
-            console.log(data)
-            const zip = new JSZip()
-            zip.loadAsync(data.data).then(async (zip) => {
-                const files = zip.files
-                const contract = await files["contract.js"].async("string")
-                const state = await files["state.json"].async("string")
-                setContracts({
-                    ...contracts, [repo.name]: {
-                        "contract.js": contract,
-                        "state.json": state
-                    }
-                })
-            })
-        })
+        const zipUrl = `http://localhost:1984/${dataTxId}`
+        async function get(url: string) {
+            const { data } = await axios({
+                method: 'GET',
+                url: url,
+                responseType: "arraybuffer"
+            });
+            return data;
+        }
+        async function getAndUnZip(url: string) {
+            const zipFileBuffer = await get(url);
+            console.log(zipFileBuffer)
+            const zip = await JSZip.loadAsync(zipFileBuffer)
+            console.log(zip.files)
+            const c = zip.file("contract.js")?.async("string")
+            const s = zip.file("state.json")?.async("string")
+            const [csrc, ssrc] = await Promise.all([c, s])
+            console.log(csrc, ssrc)
+            if (!csrc || !ssrc) return alert("invalid repo")
+            const cdata = {
+                ...contracts,
+                [repo.name]: {
+                    "contract.js": csrc,
+                    "state.json": ssrc
+                }
+            }
+            localStorage.setItem("contracts", JSON.stringify(cdata))
+            setContracts(cdata)
+
+        }
+        getAndUnZip(zipUrl)
     }
 
-    async function updateData(name: string, id: string) {
+    // async function updateData(name: string, id: string) {
 
 
-    }
+    // }
 
     function auth() {
         if (connected)

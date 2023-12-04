@@ -64,22 +64,22 @@ function App() {
     )
   }
 
-  const FileTab = ({
-    text,
-    id,
-  }: {
-    text: string
-    id: "contract" | "state"
-  }) => {
-    return (
-      <button
-        onClick={() => setActiveTab(id)}
-        className={`${activeTab == id ? "bg-black/40" : ""} p-3`}
-      >
-        {text}
-      </button>
-    )
-  }
+  // const FileTab = ({
+  //   text,
+  //   id,
+  // }: {
+  //   text: string
+  //   id: "contract" | "state"
+  // }) => {
+  //   return (
+  //     <button
+  //       onClick={() => setActiveTab(id)}
+  //       className={`${activeTab == id ? "bg-black/40" : ""} p-3`}
+  //     >
+  //       {text}
+  //     </button>
+  //   )
+  // }
 
   function setCode(e: string) {
     const c = {
