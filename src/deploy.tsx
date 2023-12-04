@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react"
 import { createContract } from "arweavekit/contract"
 
-const derivations = [
-    "not allowed",
-    "Allowed-With-Credit",
-    "Allowed-With-Indication",
-    "Allowed-With-License-Passthrough",
-    "Allowed-With-RevenueShare"
-]
+// const derivations = [
+//     "not allowed",
+//     "Allowed-With-Credit",
+//     "Allowed-With-Indication",
+//     "Allowed-With-License-Passthrough",
+//     "Allowed-With-RevenueShare"
+// ]
 
-const commercialUses = [
-    "not allowed",
-    "Allowed",
-    "Allowed-With-Credit"
-]
+// const commercialUses = [
+//     "not allowed",
+//     "Allowed",
+//     "Allowed-With-Credit"
+// ]
 
 function extractFunctions(src: string) {
-    const functionRegex = /function\s+([^\s(]+)\s*\(([^)]*)\)\s*{([^}]*)}/g;
+    // const functionRegex = /function\s+([^\s(]+)\s*\(([^)]*)\)\s*{([^}]*)}/g;
+    const functionRegex = /case\s+"([^"]+)"/g;
     const matches = src.matchAll(functionRegex);
     const functions = [];
 
@@ -34,8 +35,8 @@ export default function Deploy() {
     const [availableContracts, setAvailableContracts] = useState<string[]>([])
     const [contractTarget, setContractTarget] = useState<string>("")
     const [deployTarget, setDeployTarget] = useState("")
-    const [derivation, setDerivation] = useState<string>("")
-    const [commercialUse, setCommercialUse] = useState<string>("")
+    // const [derivation, setDerivation] = useState<string>("")
+    // const [commercialUse, setCommercialUse] = useState<string>("")
     const [fileName, setFileName] = useState("")
     const [walletUploaded, setWalletUploaded] = useState(false)
     const [walletJWK, setWalletJWK] = useState<string>()
@@ -148,7 +149,7 @@ export default function Deploy() {
             <div className="text-center">or</div>
             <button className="p-2 bg-green-500/10" onClick={() => { setUseWallet(true); setWalletUploaded(false) }}>Use ArConnect (wip) {useWallet && "✅"}</button>
         </>}
-        {(walletUploaded || useWallet) && <div>
+        {/* {(walletUploaded || useWallet) && <div>
             <div className="text-center text-xl">Universal Data Licensing v1.0
                 {" "}<a className="underline text-green-100/80 text-sm" target="_blank" href="https://arweave.net/yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8">read more</a>
             </div>
@@ -173,8 +174,9 @@ export default function Deploy() {
                     </select>
                 </div>
             </div>
-        </div>}
-        {(derivation && commercialUse) && <div className="w-full my-5"><button className="p-2 bg-green-500/10 mx-auto block" onClick={deploy}>Deploy 🚀</button></div>}
+        </div>} */}
+        {/* {(derivation && commercialUse) && <div className="w-full my-5"><button className="p-2 bg-green-500/10 mx-auto block" onClick={deploy}>Deploy 🚀</button></div>} */}
+        {(walletUploaded || useWallet) && <div className="w-full my-5"><button className="p-2 bg-green-500/10 mx-auto block" onClick={deploy}>Deploy 🚀</button></div>}
         {error && <div className="text-red-500/80 bg-black/40 p-2 text-lg">{error}</div>}
         {deploySuccess && <div className="text-green-500/80 bg-black/40 p-2 text-lg">
             <div>Contract deployed successfully!</div>

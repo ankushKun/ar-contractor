@@ -16,7 +16,7 @@ export default function Test() {
     const [selectedContract, setSelectedContract] = useState<string>("")
     const [functionType, setFunctionType] = useState<ftypes>("")
     const [functionName, setFunctionName] = useState<string>("")
-    const [functionArgs, setFunctionArgs] = useState<string>("")
+    const [functionArgs, setFunctionArgs] = useState<string>('{ "name": "ankushKun" }')
     const [result, setResult] = useState<string>("")
     const [state, setState] = useState<string>("")
     const [success, setSuccess] = useState(false)
@@ -37,7 +37,8 @@ export default function Test() {
                 environment: deployments[selectedContract].env,
                 contractTxId: deployments[selectedContract].id,
                 options: {
-                    function: functionName
+                    function: functionName,
+                    ...JSON.parse(functionArgs)
                 },
                 strategy: "arweave"
             })
@@ -55,30 +56,41 @@ export default function Test() {
             setState(JSON.stringify(res.viewContract.state, null, 2))
         }
         else if (functionType == "write") {
-            const res = await writeContract({
-                wallet: "use_wallet",
-                environment: deployments[selectedContract].env,
-                contractTxId: deployments[selectedContract].id,
-                options: {
-                    function: functionName,
-                    ...JSON.parse(functionArgs)
-                },
-                strategy: "arweave"
-            })
-            console.log(res)
-            if (res.result.status == 200) {
-                setSuccess(true)
-                setResult("TXN ID: " + res.writeContract.originalTxId)
-            } else {
-                setSuccess(false)
-                setResult(`error: ${res.result.status}
+            try {
+                const res = await writeContract({
+                    wallet: "use_wallet",
+                    environment: deployments[selectedContract].env,
+                    contractTxId: deployments[selectedContract].id,
+                    options: {
+                        function: functionName,
+                        ...JSON.parse(functionArgs)
+                    },
+                    strategy: "arweave"
+                })
+                console.log(res)
+                if (res.result.status == 200) {
+                    setSuccess(true)
+                    setResult("TXN ID: " + res.writeContract.originalTxId)
+                } else {
+                    setSuccess(false)
+                    setResult(`error: ${res.result.status}
 ${res.result.statusText}
 
 ${res.writeContract.errorMessage}`)
 
+                }
+                setState(JSON.stringify(res.state, null, 2))
             }
-            setState(JSON.stringify(res.state, null, 2))
+            catch (e) {
+                console.log(e)
+                setResult(e as string)
+            }
         }
+    }
+
+    function beautifyInput() {
+        console.log(JSON.stringify(JSON.parse(functionArgs), null, 2))
+        setFunctionArgs(JSON.stringify(JSON.parse(functionArgs), null, 2))
     }
 
     return (
@@ -113,8 +125,8 @@ ${res.writeContract.errorMessage}`)
                                     })
                                 }
                             </select>
-                            <div className=" -mb-2 text-sm">Input JSON</div>
-                            <textarea className="w-full bg-transparent p-0.5 px-1 border border-white/40" rows={10} placeholder="input json (optional)" defaultValue={JSON.stringify({ name: "ankushKun" }, undefined, 2)} onChange={(e) => setFunctionArgs(e.target.value)} />
+                            <div className=" -mb-2 text-sm">Input JSON <button className="text-xs underline" onClick={beautifyInput}>(beautify)</button></div>
+                            <textarea className="w-full bg-transparent p-0.5 px-1 border border-white/40" rows={10} placeholder="input json (optional)" value={functionArgs} onChange={(e) => setFunctionArgs(e.target.value)} />
                             <button className="bg-transparent p-0.5 px-1 border border-white/50" onClick={() => interact()}>call</button>
                         </div>
                     </div>

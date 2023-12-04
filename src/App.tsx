@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react"
 import { useMonaco } from "@monaco-editor/react"
-import theme from "monaco-themes/themes/Nord.json"
+// import theme from "monaco-themes/themes/Merbivore Soft.json"
+import theme from "./themes/merbivore-modified.json"
 import { defaultContract, defaultState } from "./default/name"
 import { editor } from "monaco-editor"
 import CodeArea from "./components/codeArea"
 import Tab from "./components/tab"
+import JSZip from "jszip"
+import saveAs from "file-saver"
 
-type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset" | "test" | "cloud" | "showcase"
+type tabs = "" | "settings" | "contract" | "state" | "deploy" | "reset" | "test" | "cloud" | "showcase" | string
 
 type files = {
   [key: string]: {
@@ -23,7 +26,7 @@ function App() {
 
   useEffect(() => {
     if (monaco)
-      monaco?.editor.defineTheme("nord", theme as editor.IStandaloneThemeData)
+      monaco?.editor.defineTheme("custom", theme as editor.IStandaloneThemeData)
   }, [monaco])
 
 
@@ -133,6 +136,17 @@ function App() {
     setActiveTab("")
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function downloadZip(e: any, file: string) {
+    e.stopPropagation()
+    const zip = new JSZip()
+    zip.file("contract.js", contracts[file]["contract.js"])
+    zip.file("state.json", contracts[file]["state.json"])
+    zip.generateAsync({ type: "blob" }).then(async function (content) {
+      saveAs(content, `${file}.zip`)
+    })
+  }
+
   function renderSwitch(param: tabs) {
     switch (param) {
       case "deploy":
@@ -143,9 +157,9 @@ function App() {
         return <Tab tab="cloud" />
       case "showcase":
         return <Tab tab="showcase" />
-      case "contract":
+      case "contract.js":
         return <CodeArea value={contracts[activeContract]["contract.js"]} setValue={setCode} language="javascript" />
-      case "state":
+      case "state.json":
         return <CodeArea value={contracts[activeContract]["state.json"]} setValue={setState} language="json" />
       case "settings":
         return <>
@@ -153,7 +167,7 @@ function App() {
         </>
       default:
         return <>
-          <div>Welcome to MixAR Studio</div>
+          <div>Welcome to BetterIDE</div>
           <div>Choose a contract from the left panel or create a new one</div>
         </>
     }
@@ -174,11 +188,22 @@ function App() {
           <div className="bg-black/10 p-0.5 px-5 break-keep text-center">Contracts</div>
           <div className="">
             {Object.keys(contracts).map((file: string) => {
-              return <button className={`flex gap-1 w-full text-left border-b border-white/10 ${activeContract == file && "bg-white/10 "}`}
-                onClick={() => { setActiveContract(file); setActiveTab("contract") }}
-              ><div className="overflow-x-scroll grow p-1">{file}</div>
-                {/* <button className=" p-1 bg-red-500/10" onClick={(e) => delContract(e, file)}>download</button> */}
-                <button className=" p-1 bg-red-500/10" onClick={(e) => delContract(e, file)}>x</button>
+              return <button className={`flex flex-col w-full text-left border-b border-white/10 ${activeContract == file && "bg-white/10 "}`}
+                onClick={() => { setActiveContract(file) }}
+              >
+                <div className="overflow-x-scroll grow p-1">{file}</div>
+                <div className="flex gap-1 absolute right-0">
+                  <button className=" p-1 bg-red-500/10" onClick={(e) => downloadZip(e, file)}>d</button>
+                  <button className=" p-1 bg-red-500/10" onClick={(e) => delContract(e, file)}>x</button>
+                </div>
+                {
+                  activeContract == file &&
+                  <div className="w-full pl-4">
+                    {Object.keys(contracts[file]).map((fname) => {
+                      return <button className="block" onClick={() => setActiveTab(fname as tabs)}>{fname}</button>
+                    })}
+                  </div>
+                }
               </button>
             })}
             <button className="p-1 w-full border-b border-white/10 px-2" onClick={newContract}>+</button>
@@ -186,12 +211,12 @@ function App() {
         </div>
       </div>
       <div className="grow bg-slate-500/20">
-        <div className="flex h-[5vh] items-center bg-[#282c34] overflow-clip">
+        {/* <div className="flex h-[5vh] items-center bg-[#282c34] overflow-clip">
           {activeContract && <>
             <FileTab id="contract" text="contract.js" />
             <FileTab id="state" text="state.json" />
           </>}
-        </div>
+        </div> */}
         <div className="h-[95vh] w-full bg-blue-300/5  flex flex-col items-center justify-center">
           {renderSwitch(activeTab)}
         </div>

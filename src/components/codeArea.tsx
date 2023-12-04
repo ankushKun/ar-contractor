@@ -7,7 +7,7 @@ export default function CodeArea({ value, setValue, language }: { value: string,
         width="100%"
         language={language}
         value={value}
-        theme="nord"
+        theme="custom"
         defaultValue={value}
         onChange={e => setValue(e)}
     />

@@ -1,6 +1,6 @@
 export const defaultContract = `
 
-// Welcome to MixAR Studio
+// Welcome to BetterIDE Studio
 // Feel free to edit the following smartweave contract code and add your own functions
 
 
