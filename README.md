@@ -1,3 +1,5 @@
+# NOTE: This was a prototype built in 3 days, please checkout [BetterIDEa](https://github.com/ankushKun/betterIDE) for the latest version
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
